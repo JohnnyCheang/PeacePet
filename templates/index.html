@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+/* 首页特定样式 */
+.hero-banner {
+    min-height: 650px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    text-shadow: 0 2px 15px rgba(0,0,0,0.5);
+    /* 修复 1: 视差滚动效果 */
+    background-attachment: fixed; 
+}
+.hero-banner h1 { margin-bottom: 15px; line-height: 1.1; }
+.hero-banner p { margin-bottom: 35px; font-weight: 300; letter-spacing: 1px; }
+.btn-hero {
+    padding: 15px 40px;
+    background: white;
+    color: var(--primary);
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: 0.3s;
+}
+.btn-hero:hover { background: var(--accent); color: white; }
+
+.slogan-section {
+    padding: 80px 0;
+    background: #f9f9f9;
+}
+.slogan-grid {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.slogan-text { flex: 1; }
+.slogan-img img { width: 100%; max-width: 400px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+
+/* 修复 2: 无图片时自动居中 */
+.slogan-grid.no-img {
+    justify-content: center;
+    text-align: center;
+}
+.slogan-grid.no-img .slogan-text {
+    flex: none;
+    max-width: 800px;
+}
+
+@media (max-width: 768px) { 
+    .slogan-grid { flex-direction: column; text-align: center; } 
+    .hero-banner { background-attachment: scroll; /* 移动端禁用视差以提高性能 */ }
+}
+</style>
+
+<main>
+    <header class="hero-banner" style="background-image: url('{{ 
+            url_for('static', filename='uploads/' + g.settings['hero_banner_upload']) if g.settings['hero_banner_type'] == 'upload' and g.settings['hero_banner_upload'] 
+            else g.settings['hero_banner_url'] 
+        }}');">
+        <div class="container">
+            <h1 style="font-family: '{{ g.settings.get('hero_title_font') }}', serif; font-size: {{ g.settings.get('hero_title_size') }}rem;">
+                {{ g.settings.get('hero_title_' + g.lang, 'The Art of Protection') }}
+            </h1>
+            <p style="font-family: '{{ g.settings.get('hero_slogan_font') }}', sans-serif; font-size: {{ g.settings.get('hero_slogan_size') }}rem;">
+                {{ g.settings.get('hero_slogan_' + g.lang, 'PROFESSIONAL GRADE GEAR') }}
+            </p>
+            <a href="{{ url_for('catalog_index') }}" class="btn-hero">
+                {{ 'Shop Now' if g.lang == 'en' else '立即选购' }}
+            </a>
+        </div>
+    </header>
+    
+    <section class="slogan-section">
+        <div class="container slogan-grid {% if not g.settings.get('home_slogan_img') %}no-img{% endif %}">
+            {% if g.settings.get('home_slogan_img') %}
+            <div class="slogan-img">
+                <img src="{{ url_for('static', filename='uploads/' + g.settings['home_slogan_img']) }}">
+            </div>
+            {% endif %}
+            
+            <div class="slogan-text">
+                <h2 style="font-family: '{{ g.settings.get('home_slogan_title_font') }}', serif; font-size: {{ g.settings.get('home_slogan_title_size') }}rem; color: var(--primary); margin-bottom: 20px;">
+                    {{ g.settings.get('home_slogan_title_' + g.lang, 'Our Mission') }}
+                </h2>
+                <p style="font-family: '{{ g.settings.get('home_slogan_body_font') }}', sans-serif; font-size: {{ g.settings.get('home_slogan_body_size') }}rem; line-height: 1.8; color: #555;">
+                    {{ g.settings.get('home_slogan_body_' + g.lang, 'We strive to provide premium gear...') }}
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="container" style="padding: 80px 20px;">
+        <h2 style="text-align: center; margin-bottom: 50px; font-family: 'Playfair Display', serif;">{{ 'Featured Essentials' if g.lang == 'en' else '精选产品' }}</h2>
+        <div class="p-grid">
+            {% for p in products %}
+            <a href="{{ url_for('product_detail', product_id=p.id) }}" class="p-card">
+                <div class="p-img-box"><img src="{{ url_for('static', filename='uploads/' + p.main_image) }}"></div>
+                <div class="p-meta">
+                    <div class="p-title">{{ p['title_' + g.lang] }}</div>
+                    <div class="p-price">${{ p.price }}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% endblock %}

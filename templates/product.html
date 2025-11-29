@@ -1,0 +1,185 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    
+    <div class="detail-wrapper">
+        <div class="detail-left">
+            {% if product.main_image %}
+                <img src="{{ url_for('static', filename='uploads/' + product.main_image) }}" alt="{{ product.title_en }}">
+            {% else %}
+                <div style="height: 400px; background: #eee; display: flex; align-items: center; justify-content: center; color: #999;">No Image</div>
+            {% endif %}
+        </div>
+
+        <div class="detail-right">
+            <h1 class="detail-title">{{ product['title_' + g.lang] }}</h1>
+            <div class="detail-price">${{ product.price }}</div>
+            
+            <div style="color: #f39c12; margin-bottom: 20px; font-size: 1.1rem;">
+                ★★★★★ <span style="color: #999; font-size: 0.9rem;">({{ product.avg_rating }})</span>
+            </div>
+
+            <div class="detail-bullets">
+                {% set bullets_key = 'bullet_points_' + g.lang %}
+                {% if product[bullets_key] %}
+                    <ul>
+                    {% for point in product[bullets_key].split('\n') %}
+                        {% if point.strip() %}
+                            <li>{{ point }}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div style="margin-top: 40px;">
+                <button class="btn" style="width: 100%; padding: 18px; font-size: 1.1rem; font-weight: bold;" onclick="openModal()">
+                    {{ 'BUY NOW / INQUIRY' if g.lang == 'en' else '立即购买 / 询价' }}
+                </button>
+                <p style="text-align: center; margin-top: 10px; font-size: 0.9rem; color: #666;">
+                    {{ 'Free shipping on all orders.' if g.lang == 'en' else '所有订单免运费。' }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="aplus-section">
+        <div style="margin-bottom: 40px; line-height: 1.8; color: #444; font-size: 1.05rem;">
+            {% set desc_key = 'description_' + g.lang %}
+            {{ product[desc_key] }}
+        </div>
+        {% if a_plus_imgs %}
+            {% for img in a_plus_imgs %}
+                {% if img %}
+                    <img src="{{ url_for('static', filename='uploads/' + img) }}" alt="Detail Image">
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {% if reviews %}
+    <div style="margin-top: 80px; border-top: 1px solid #eee; padding-top: 40px;">
+        <h2 class="serif" style="text-align: center; margin-bottom: 40px;">{{ 'Customer Reviews' if g.lang == 'en' else '客户反馈' }}</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+            {% for review in reviews %}
+            <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <div style="color: #f39c12; margin-bottom: 10px;">
+                    {% for i in range(review.rating|int) %}★{% endfor %}
+                </div>
+                <p style="color: #666; font-style: italic;">"{{ review['text_' + g.lang] }}"</p>
+                {% if review.image %}
+                <img src="{{ url_for('static', filename='uploads/' + review.image) }}" style="margin-top: 15px; max-height: 100px; border-radius: 4px;">
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<div class="modal-overlay" id="inquiryModal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        
+        <div id="modalFormContainer">
+            <h3 class="serif" style="text-align: center; margin-bottom: 20px; color: var(--primary);">
+                {{ 'Order Inquiry' if g.lang == 'en' else '提交订单信息' }}
+            </h3>
+            <p style="text-align: center; color: #666; margin-bottom: 30px; font-size: 0.9rem;">
+                {{ 'Please fill in your details. We will contact you shortly for payment and shipping.' if g.lang == 'en' else '请填写您的信息，我们将尽快联系您安排付款和发货。' }}
+            </p>
+            
+            <form id="inquiryForm" onsubmit="submitInquiry(event)">
+                <input type="hidden" name="product_name" value="{{ product.title_en }}">
+                
+                <div style="margin-bottom: 15px;">
+                    <input type="text" name="customer_name" placeholder="{{ 'Your Name' if g.lang == 'en' else '您的姓名' }}" required class="form-control">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <input type="text" name="contact" placeholder="{{ 'Email or Phone Number' if g.lang == 'en' else '邮箱或电话号码' }}" required class="form-control">
+                </div>
+                <div style="margin-bottom: 25px;">
+                    <textarea name="note" placeholder="{{ 'Message (Optional)' if g.lang == 'en' else '备注留言 (选填)' }}" rows="3" class="form-control"></textarea>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">{{ 'Submit Order' if g.lang == 'en' else '提交订单' }}</button>
+            </form>
+        </div>
+
+        <div id="modalSuccess" class="modal-success">
+            <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm-1.25 17.292l-4.5-4.364 1.857-1.858 2.643 2.506 5.643-5.784 1.857 1.857-7.5 7.643z"/></svg>
+            <h3 class="serif" style="color: var(--primary);">{{ 'Thank You!' if g.lang == 'en' else '提交成功！' }}</h3>
+            <p style="color: #666; margin-top: 10px;">
+                {{ 'We have received your inquiry and will contact you within 24 hours.' if g.lang == 'en' else '我们已收到您的信息，将在24小时内与您联系。' }}
+            </p>
+            <button class="btn btn-outline" style="margin-top: 20px; color: var(--primary); border-color: var(--primary);" onclick="closeModal()">{{ 'Close' if g.lang == 'en' else '关闭' }}</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById('inquiryModal');
+    const formContainer = document.getElementById('modalFormContainer');
+    const successContainer = document.getElementById('modalSuccess');
+
+    function openModal() {
+        modal.classList.add('show');
+    }
+
+    function closeModal() {
+        modal.classList.remove('show');
+        // 重置状态，以便下次打开时显示表单
+        setTimeout(() => {
+            formContainer.style.display = 'block';
+            successContainer.style.display = 'none';
+            document.getElementById('inquiryForm').reset();
+        }, 300);
+    }
+
+    // 点击遮罩层关闭
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // AJAX 提交表单
+    function submitInquiry(event) {
+        event.preventDefault(); // 阻止默认跳转
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        // 按钮变更为加载状态
+        const btn = form.querySelector('button');
+        const originalText = btn.innerText;
+        btn.innerText = 'Sending...';
+        btn.disabled = true;
+
+        fetch('{{ url_for("submit_order") }}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            if (data === 'OK') {
+                // 隐藏表单，显示感谢信息
+                formContainer.style.display = 'none';
+                successContainer.style.display = 'block';
+            } else {
+                alert('Something went wrong. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error connecting to server.');
+        })
+        .finally(() => {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        });
+    }
+</script>
+{% endblock %}

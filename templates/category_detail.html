@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+/* 二级页面头部样式 */
+.category-header { 
+    text-align: center; 
+    padding: 60px 0 40px 0; 
+    background: transparent; 
+    margin-bottom: 20px;
+}
+.category-header h1 { 
+    /* 使用后台设置的 Catalog 字体样式，保持统一 */
+    font-family: {{ g.settings.get('catalog_title_font', 'Playfair Display') }}; 
+    font-size: {{ g.settings.get('catalog_title_size', '3.0') }}rem;
+    color: var(--primary); 
+    margin-bottom: 10px;
+}
+.category-header p {
+    font-family: {{ g.settings.get('catalog_body_font', 'Lato') }}; 
+    font-size: {{ g.settings.get('catalog_body_size', '1.1') }}rem;
+    color: #666; 
+    letter-spacing: 1px;
+}
+</style>
+
+<div class="category-header">
+    <h1>{{ category.name_zh if g.lang == 'zh' else category.name_en }}</h1>
+    <p>{{ 'EXPLORE COLLECTION' if g.lang == 'en' else '探索系列' }}</p>
+</div>
+
+<div class="container-tight" style="margin-bottom: 80px;">
+    {% if products %}
+    <div class="p-grid">
+        {% for product in products %}
+        <a href="{{ url_for('product_detail', product_id=product.id) }}" class="p-card">
+            <div class="p-img-box">
+                <img src="{{ url_for('static', filename='uploads/' + product.main_image) }}" alt="{{ product.title_en }}">
+            </div>
+            <div class="p-meta">
+                <div class="p-title" style="font-weight: bold; font-size: 1.1em;">
+                    {{ product.title_zh if g.lang == 'zh' else product.title_en }}
+                </div>
+                <div class="p-price" style="color: var(--accent);">${{ product.price }}</div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="text-align: center; padding: 50px; font-size: 1.2em; color: #999;">
+        {{ '此分类下暂无产品。' if g.lang == 'zh' else 'No products found in this category.' }}
+    </p>
+    {% endif %}
+</div>
+{% endblock %}

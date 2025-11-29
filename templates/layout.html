@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html lang="{{ g.lang }}">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PeacePet | {{ '懂狗，更懂安心' if g.lang == 'zh' else 'Premium Canine Gear' }}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <nav>
+
+        <a href="/" class="logo">
+
+            {% if g.settings.get('site_logo') %}
+
+                <img src="{{ url_for('static', filename='uploads/' + g.settings['site_logo']) }}" alt="PeacePet Logo">
+
+            {% else %}
+
+                PeacePet <span style="font-size:10px; vertical-align: top;">®</span>
+
+            {% endif %}
+
+        </a>
+
+        <div class="nav-links">
+
+            <a href="/catalog">{{ '产品系列' if g.lang == 'zh' else 'COLLECTION' }}</a>
+
+            <div class="dropdown-menu-container">
+
+                <a href="/catalog" class="nav-item">{{ '分类目录' if g.lang == 'zh' else 'CATALOG' }}</a>
+
+                <div class="dropdown-content">
+
+                    {% for cat in g.categories %}
+
+                        <a href="/catalog/{{ cat['slug'] }}">{{ cat['name_zh'] if g.lang == 'zh' else cat['name_en'] }}</a>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+            <a href="/deals">{{ '促销活动' if g.lang == 'zh' else 'DEALS' }}</a>
+
+            <a href="/new_arrivals">{{ '新品上市' if g.lang == 'zh' else 'NEW ARRIVALS' }}</a>
+
+            <a href="/about">{{ '品牌故事' if g.lang == 'zh' else 'OUR STORY' }}</a>
+
+        </div>
+
+        <a href="/switch_lang/{{ 'en' if g.lang == 'zh' else 'zh' }}" class="lang-switch">{{ 'English' if g.lang == 'zh' else '中文' }}</a>
+
+    </nav>
+
+
+
+    {% block content %}{% endblock %}
+
+
+
+    <footer style="background: var(--primary); color: #ccc; padding: 80px 5%; margin-top: 100px;">
+
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap;">
+
+            <div style="flex:1; min-width: 300px;">
+
+                <h3 style="color: white;">PeacePet</h3>
+
+                <p>{{ g.settings.get('footer_text_zh') if g.lang == 'zh' else g.settings.get('footer_text_en') }}</p>
+
+            </div>
+
+            <div style="flex:1; min-width: 200px; text-align: right;">
+
+                <p>{{ '联系邮箱' if g.lang == 'zh' else 'Contact Email' }}: {{ g.settings.get('contact_email', 'N/A') }}</p>
+
+                <p>&copy; 2025 PeacePet Inc.</p>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+</body>
+
+</html>
