@@ -613,11 +613,16 @@ def admin():
 
         elif action == "ADD_FEEDBACK":
             img_url = ""
-            feedback_img_file = request.files.get("feedback_image")
-            if feedback_img_file and feedback_img_file.filename:
-                img_filename = "fb_" + secure_filename(feedback_img_file.filename)
-                blob = put(f"uploads/{img_filename}", feedback_img_file.read())
-                img_url = blob["url"]
+            image_type = request.form.get("feedback_image_type")
+            
+            if image_type == "url":
+                img_url = request.form.get("feedback_image_url", "")
+            else:
+                feedback_img_file = request.files.get("feedback_image")
+                if feedback_img_file and feedback_img_file.filename:
+                    img_filename = "fb_" + secure_filename(feedback_img_file.filename)
+                    blob = put(f"uploads/{img_filename}", feedback_img_file.read())
+                    img_url = blob["url"]
 
             c.execute(
                 "INSERT INTO feedback (product_id, rating, text_en, text_zh, image) VALUES (%s, %s, %s, %s, %s)",
