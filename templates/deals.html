@@ -6,24 +6,28 @@
     padding: 60px 0 30px 0;
     background: transparent;
   }
+
   .page-header-alt h1 {
     font-family: "Playfair Display", serif;
     font-size: 3em;
     color: var(--accent);
     margin-bottom: 10px;
   }
+
   .page-header-alt p {
     font-size: 1.2em;
     color: #666;
     max-width: 800px;
     margin: 0 auto;
   }
+
   .full-width-banner {
     width: 100vw;
     margin-left: calc(-50vw + 50%);
     margin-bottom: 60px;
     display: block;
   }
+
   .full-width-banner img {
     width: 100%;
     height: auto;
@@ -35,14 +39,12 @@
 
 <div class="container">
   <div class="page-header-alt">
-    <h1
-      style="font-family: {{ g.settings.get('deals_title_font') }}; font-size: {{ g.settings.get('deals_title_size', '3.0') }}rem;"
-    >
+    <h1 class="responsive-title"
+      style="font-family: {{ g.settings.get('deals_title_font') }}; --desktop-font-size: {{ g.settings.get('deals_title_size', '3.0') }}rem; font-size: var(--desktop-font-size);">
       {{ g.settings.get('deals_title_' + g.lang) }}
     </h1>
-    <p
-      style="font-family: {{ g.settings.get('deals_body_font') }}; font-size: {{ g.settings.get('deals_body_size', '1.2') }}rem;"
-    >
+    <p class="responsive-body"
+      style="font-family: {{ g.settings.get('deals_body_font') }}; --desktop-font-size: {{ g.settings.get('deals_body_size', '1.2') }}rem; font-size: var(--desktop-font-size);">
       {{ g.settings.get('deals_body_' + g.lang) }}
     </p>
   </div>
@@ -55,10 +57,7 @@
 
   <div class="p-grid">
     {% for product in products %}
-    <a
-      href="{{ url_for('product_detail', product_id=product.id) }}"
-      class="p-card"
-    >
+    <a href="{{ url_for('product_detail', product_id=product.id) }}" class="p-card">
       <div class="p-img-box"><img src="{{ product.main_image }}" /></div>
       <div class="p-meta">
         <div class="p-title">{{ product['title_' + g.lang] }}</div>
