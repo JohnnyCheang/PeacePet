@@ -387,3 +387,111 @@ nav {
 .modal-close:hover { color: var(--primary); }
 .modal-success { text-align: center; display: none; }
 .modal-success svg { width: 60px; height: 60px; fill: var(--primary); margin-bottom: 20px; }
+
+/* --- Mobile Responsiveness --- */
+
+/* Utility Classes */
+.mobile-only { display: none !important; }
+.desktop-only { display: inline-block !important; }
+
+/* Hamburger Menu */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+}
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary);
+    transition: all 0.3s ease;
+}
+
+/* Mobile Media Query */
+@media (max-width: 768px) {
+    /* Navigation */
+    .mobile-only { display: inline-block !important; }
+    .desktop-only { display: none !important; }
+
+    .hamburger { display: flex; }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: rgba(255, 254, 250, 0.98);
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        gap: 20px;
+    }
+    .nav-links.active { display: flex; }
+    
+    .dropdown-content {
+        position: static;
+        box-shadow: none;
+        border-top: none;
+        background: transparent;
+        padding: 0;
+        text-align: center;
+        display: none; 
+    }
+    .dropdown-menu-container:hover .dropdown-content {
+        display: block;
+    }
+    /* Make dropdown items smaller/indented on mobile */
+    .dropdown-content a {
+        padding: 8px 0;
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+        min-height: 400px; /* Smaller height */
+    }
+    .hero-banner h1 {
+        font-size: 2rem; /* Smaller font */
+    }
+
+    /* Product Grid */
+    .p-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Allow 2 columns on small screens */
+        gap: 15px;
+    }
+    .p-img-box {
+        height: 200px; /* Smaller images */
+    }
+    .p-title { font-size: 1rem; }
+    .p-price { font-size: 1.1rem; }
+
+    /* Product Detail */
+    .detail-wrapper {
+        flex-direction: column;
+        gap: 30px;
+        margin-top: 30px;
+    }
+    .detail-left, .detail-right {
+        width: 100%;
+        min-width: auto;
+    }
+    .detail-title { font-size: 1.8rem; }
+
+    /* Catalog Grid */
+    .cat-grid {
+        grid-template-columns: 1fr; /* Single column */
+        gap: 15px;
+    }
+    .cat-card { height: 300px; }
+    .cat-title { font-size: 1.8rem; padding: 15px 30px; }
+
+    /* General */
+    .container { padding: 0 15px; }
+    .page-header-alt { padding: 40px 0 20px 0; }
+    .full-width-wrapper { margin-bottom: 40px; }
+    .full-width-wrapper img { max-height: 300px; }
+}
