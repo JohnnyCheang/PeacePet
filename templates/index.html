@@ -4,37 +4,11 @@
 <style>
     /* 首页特定样式 */
     /* Hero Banner */
-    .hero-banner {
-        position: relative;
-        min-height: 600px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        color: white;
-        overflow: hidden;
-    }
+    /* Hero Banner 样式已移至 style.css 统一管理 */
 
-    .hero-bg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: 0;
-    }
 
-    .hero-banner::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.2);
-        z-index: 1;
-    }
+
+
 
     .hero-banner .container {
         position: relative;
@@ -69,8 +43,15 @@
     }
 
     .slogan-section {
-        padding: 80px 0;
+        padding: 0;
         background: #f9f9f9;
+        min-height: 30vh;
+        display: flex;
+        align-items: center;
+    }
+
+    .slogan-grid {
+        padding: 60px 20px;
     }
 
     .slogan-grid {
@@ -114,7 +95,7 @@
 </style>
 
 <main>
-    <header class="hero-banner" style="background-image: url('{{ g.settings['hero_banner_upload'] if g.settings['hero_banner_type'] == 'upload' and g.settings['hero_banner_upload'] else g.settings['hero_banner_url'] }}');">
+    <header class="hero-banner" style="--banner-url: url('{{ g.settings['hero_banner_upload'] if g.settings['hero_banner_type'] == 'upload' and g.settings['hero_banner_upload'] else g.settings['hero_banner_url'] }}');">
         <img src="{{ g.settings['hero_banner_upload'] if g.settings['hero_banner_type'] == 'upload' and g.settings['hero_banner_upload'] else g.settings['hero_banner_url'] }}"
             class="hero-bg" alt="Hero Banner">
         <div class="container">
